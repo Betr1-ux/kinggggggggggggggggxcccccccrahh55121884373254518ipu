@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRASH KING V7</title>
+  <style>
+    body {
+      background: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    .hidden { display: none; }
+    .login-box, .game-box {
+      margin-top: 50px;
+    }
+    input {
+      display: block;
+      margin: 10px auto;
+      padding: 10px;
+      width: 220px;
+      border-radius: 8px;
+      border: none;
+      text-align: center;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .btn-login, .btn-play, .btn-store, .btn-next {
+      background: linear-gradient(to right, #ff0080, #ff6600);
+      color: #fff;
+    }
+    .btn-help {
+      background: #444;
+      color: #fff;
+    }
+    .timer {
+      margin: 20px auto;
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 24px;
+      font-weight: bold;
+      background: linear-gradient(to right, #ff00cc, #3333ff);
+      width: 160px;
+    }
+    .big-number {
+      font-size: 40px;
+      font-weight: bold;
+      color: #00ff00;
+      animation: pulse 1s infinite;
+    }
+    @keyframes pulse {
+      0% { color: #0f0; }
+      50% { color: #ff0; }
+      100% { color: #0f0; }
+    }
+    .prediction-box {
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #111;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid #444;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-box" id="loginBox">
+    <h2>تسجيل الدخول</h2>
+    <input type="text" id="userId" placeholder="أدخل ID">
+    <input type="password" id="code" placeholder="أدخل كود التفعيل">
+    <button class="btn-login" onclick="login()">تسجيل الدخول</button>
+  </div>
+
+  <div class="game-box hidden" id="gameBox">
+    <h2>CRASH KING V7</h2>
+    <p>تجربة اللعبة الأكثر إثارة وإرباكا</p>
+    <div class="timer" id="timer">29:50</div>
+    <div class="big-number" id="number">0.00</div>
+    <button class="btn-play" onclick="startGame()">ابدأ اللعب</button>
+    <button class="btn-help" onclick="openModal()">التعليمات</button>
+    <p>© CRASH KING 2025 - جميع الحقوق محفوظة</p>
+  </div>
+
+  <!-- صندوق التوقعات تحت -->
+  <div class="prediction-box hidden" id="predictionBox">
+    <div id="storeSection">
+      <input type="text" id="predictionInput" placeholder="أدخل توقع جديد">
+      <button class="btn-store" onclick="storePrediction()">تخزين توقع</button>
+    </div>
+    <button class="btn-next hidden" id="nextBtn" onclick="showNextPrediction()">Next ▶</button>
+  </div>
+
+  <div id="helpModal" class="modal hidden">
+    <div class="modal-content">
+      <h3>خطوات التسجيل في 1xBet 📋</h3>
+      <p>1️⃣ Goobet افتح وسجل حساب جديد.</p>
+      <p>2️⃣ Pemo1x استخدم البروموكود: <b></b></p>
+      <p>3️⃣ أودع أقل مبلغ 150ج أو 3$ حسب عملة بلدك.</p>
+      <p>بعدها سيعمل السكربت وتحصل على التوقعات الصحيحة 🚀</p>
+      <button class="close-btn" onclick="closeModal()">إغلاق</button>
+    </div>
+  </div>
+
+  <script>
+    let predictions = []; 
+    let currentIndex = 0;
+
+    function login() {
+      let id = document.getElementById("userId").value;
+      let code = document.getElementById("code").value;
+      if (id !== "" && code === "Pemo1x") {
+        document.getElementById("loginBox").classList.add("hidden");
+        document.getElementById("gameBox").classList.remove("hidden");
+        document.getElementById("predictionBox").classList.remove("hidden");
+        startTimer();
+      } else {
+        alert("البيانات غير صحيحة!");
+      }
+    }
+
+    function startTimer() {
+      let minutes = 29;
+      let seconds = 50;
+      let timerElement = document.getElementById("timer");
+
+      setInterval(function () {
+        if (seconds === 0) {
+          if (minutes === 0) {
+            timerElement.innerHTML = "انتهى الوقت";
+            return;
+          }
+          minutes--;
+          seconds = 59;
+        } else {
+          seconds--;
+        }
+        let minText = minutes < 10 ? "0" + minutes : minutes;
+        let secText = seconds < 10 ? "0" + seconds : seconds;
+        timerElement.innerHTML = minText + ":" + secText;
+      }, 1000);
+    }
+
+    function startGame() {
+      window.location.href = "https://promogooo.click/Pemo1x";
+    }
+
+    function storePrediction() {
+      let input = document.getElementById("predictionInput");
+      if (input.value.trim() !== "") {
+        predictions.push(input.value.trim());
+        input.value = "";
+      }
+
+      // لو خزّن 6 توقعات يخفي التخزين ويظهر زر النكست
+      if (predictions.length >= 6) {
+        document.getElementById("storeSection").classList.add("hidden");
+        document.getElementById("nextBtn").classList.remove("hidden");
+      }
+    }
+
+    function showNextPrediction() {
+      if (predictions.length > 0) {
+        let numberElement = document.getElementById("number");
+        numberElement.innerText = predictions[currentIndex];
+        currentIndex = (currentIndex + 1) % predictions.length;
+      }
+    }
+
+    function openModal() {
+      document.getElementById("helpModal").classList.remove("hidden");
+    }
+    function closeModal() {
+      document.getElementById("helpModal").classList.add("hidden");
+    }
+  </script>
+
+</body>
+</html>
